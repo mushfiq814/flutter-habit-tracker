@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/models/Habit.dart';
+import 'package:habit_tracker/models/HabitActivity.dart';
+import 'package:habit_tracker/utils/sheets-api/getHabitActivities.dart';
 import 'package:habit_tracker/utils/sheets-api/getHabits.dart';
 import 'package:habit_tracker/utils/sheets-api/refreshSheetsToken.dart';
 
@@ -29,11 +31,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool isLoading = false;
   List<Habit> habits;
+  List<HabitActivity> tracker;
 
   Future _fetchData() async {
     setState(() => isLoading = true);
     String sheetsAccessToken = await refreshSheetsToken();
     habits = await getHabits(sheetsAccessToken);
+    tracker = await getHabitActivities(sheetsAccessToken);
     setState(() => isLoading = false);
   }
   
@@ -50,23 +54,29 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            isLoading
-            ? CircularProgressIndicator()
-            : Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: habits.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Text(habits[index].name);
-                }
-              )
-            )
-          ],
-        ),
+        child: isLoading
+        ? CircularProgressIndicator()
+        : showTracker(tracker),
       ),
     );
   }
+}
+
+Widget showTracker(List<HabitActivity> habitActivities) {
+  return ListView.builder(
+    padding: const EdgeInsets.all(8),
+    itemCount: habitActivities.length,
+    itemBuilder: (BuildContext context, int index) {
+      HabitActivity hAct = habitActivities[index];
+      return ListTile(
+        leading: Text(hAct.done.toString()),
+        title: Text(hAct.date),
+        subtitle: Text('Habit: ${hAct.habitId.toString()}'),
+      );
+    }
+  );
+}
+
+Widget showHabitRow() {
+  return 
 }

@@ -13,6 +13,4 @@ class Habit {
       name: list[1],
     );
   }
-
-  void printHabit() => print('id: $id, name: $name');
-} 
+}

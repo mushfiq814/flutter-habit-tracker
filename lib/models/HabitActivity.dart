@@ -9,11 +9,11 @@ class HabitActivity {
     this.done,
   });
 
-  factory HabitActivity.fromJson(List<String> json) {
+  factory HabitActivity.fromList(List<dynamic> list) {
     return new HabitActivity(
-      date: json[0],
-      habitId: int.parse(json[1]),
-      done: json[2] == "1"
+      date: list[0],
+      habitId: int.parse(list[1]),
+      done: list[2] == "1"
     );
   }
-} 
+}
